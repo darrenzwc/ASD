@@ -1,6 +1,7 @@
 import sys
 import torch
 import torch.nn as nn
+import torchvision.transforms as transforms
 
 class model(nn.Module):
     def __init__(self, lr=0.0001, lrDecay=0.95, **kwargs):
@@ -17,10 +18,38 @@ class model(nn.Module):
         self.createFCModel()
 
     def createVisualModel(self):
-        pass
+         self.visualModel = nn.Sequential(
+            transforms.Resize((128, 128)),
+            nn.ReLU(nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1)),
+            nn.BatchNorm2d(64),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.ReLU(nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1)),
+            nn.BatchNorm2d(128),
+            nn.MaxPool2d(kernel_size=2, stride=2)
+            nn.ReLU(nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1)),
+            nn.BatchNorm2d(128),
+            nn.MaxPool2d(kernel_size=2, stride=2)
+            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
+            nn.flatten()
+        )
 
     def createAudioModel(self):
-        pass
+        self.audioModel = nn.Sequential(
+            nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm2d(64),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm2d(128),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(),
+            nn.BatchNorm2d(128),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
+            nn.flatten()
+        )
 
     def createFusionModel(self):
         pass
